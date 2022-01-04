@@ -1,5 +1,7 @@
 # Projet
 
+Réalisé par Heddadj Steven et Sidikou Adamou Jamal
+
 ## Contexte
 
 La société FunProg a décidé de développer une tondeuse à gazon automatique, destinée aux surfaces rectangulaires.
