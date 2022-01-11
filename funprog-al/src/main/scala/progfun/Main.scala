@@ -2,6 +2,7 @@ package fr.esgi.al.funprog
 
 import better.files._
 
+// TODO: Fichier output en json et/ou csv
 object Main extends App {
 
   /* Definition variables test */
@@ -45,6 +46,7 @@ object Main extends App {
 
   def followInstructions(str: String, rob: Robot): Robot = {
     if (str.length() < 1) {
+      // TODO: Ecriture donnees de chaque robot dans un fichier output
       rob
     } else {
       val tmp = rob.action(str.charAt(0).toString)
