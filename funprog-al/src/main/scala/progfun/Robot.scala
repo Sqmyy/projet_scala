@@ -1,6 +1,5 @@
 package fr.esgi.al.funprog
 
-//TODO: Fix immutability errors (In Progress)
 /* Implementation de la logique du Robot */
 class Robot(x: Int, xMax: Int, y: Int, yMax: Int, direction: Char) {
 
