@@ -3,30 +3,58 @@ package fr.esgi.al.funprog
 import better.files._
 
 object Main extends App {
+
+  /* Definition variables test */
+
   val f = File("src/main/resources/test")
   val lines = f.lines.toList
+  val fileAsString = f.contentAsString
+  val linesAsStrings = fileAsString.split('\n')
+  val acc = 0
 
-  println("Parsing file...")
-  def processLines(lines: List[String]): Unit = lines match {
-    case hd :: tl => {
-      processLine(hd, acc)
-      processLines(tl, acc++)
+  val xMax = (linesAsStrings(0).split(' ')(0)).toInt
+  val yMax = (linesAsStrings(0).split(' ')(1)).toInt
+
+  val rob = new Robot(0, 0, 0, 0, "N")
+
+  /* ------------------------- */
+
+  /* Fonctions lecture de fichier d'entree */
+
+  def processLines(lines: List[String], acc: Int, rob: Robot): Robot =
+    lines match {
+      case hd :: tl => {
+        if (acc == 0) {
+          processLines(tl, acc + 1, rob)
+        } else if (acc != 0 && acc % 2 != 0) {
+          val tmp = initRobot(hd, xMax, yMax)
+          tmp.desc()
+          processLines(tl, acc + 1, tmp)
+        } else {
+          val tmp = followInstructions(hd, rob)
+          processLines(tl, acc + 1, tmp)
+        }
+      }
+      case _ => rob
     }
-    case Nil => println("EOF")  //TODO: At the end of file we stop execution
-    case _   => println("EXCEPTION ! BAD FORMAT") // Is this case really useful ?
+
+  def initRobot(str: String, xMax: Int, yMax: Int): Robot = {
+    val args = str.split(' ')
+    new Robot(args(0).toInt, xMax, args(1).toInt, yMax, args(2))
   }
 
-  def processLine(str: String, acc: Int): Unit = {
-    if(acc == 0) {
-      initGrid()    //TODO: split line 0 get both int and create grid with good dimensions, also xMax and yMax
-    } else if(acc % 2 == 0) {
-      initRobot()   //TODO: split line 1,3,5,... to create robot with good x, y and direction
+  def followInstructions(str: String, rob: Robot): Robot = {
+    if (str.length() < 1) {
+      rob
     } else {
-      followInstructions()    //TODO: if line is not empty execute robot.action(line[0]) and recursive call with line.substring(1)
+      val tmp = rob.action(str.charAt(0).toString)
+      followInstructions(str.substring(1), tmp)
     }
-    println(str)
   }
 
-  processLines(lines)
+  /* ------------------------- */
+
+  val finalRobot = processLines(lines, acc, rob)
+  // println(finalRobot.desc())
 
 }
