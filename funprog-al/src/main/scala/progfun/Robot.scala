@@ -5,8 +5,12 @@ class Robot(x: Int, xMax: Int, y: Int, yMax: Int, direction: String) {
 
   /* Simplement pour check les valeurs des attributs du robot */
   // def desc(): String = {
-  //   s"${this.x} ${this.y} ${this.direction}"
+  //   s"${this.x};${this.y};${this.direction}"
   // }
+
+  def getDirection(): String = {
+    this.direction
+  }
 
   /* Mise a jour des coordonnees lorsque le robot a pour instruction d'avancer */
   def avancer(): fr.esgi.al.funprog.Robot = direction match {

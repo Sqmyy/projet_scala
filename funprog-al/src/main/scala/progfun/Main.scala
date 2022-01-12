@@ -1,13 +1,22 @@
 package fr.esgi.al.funprog
 
 import better.files._
+import com.typesafe.config.{Config, ConfigFactory}
 
 // TODO: Fichier output en json et/ou csv
 object Main extends App {
 
-  /* Definition variables test */
+  /* Chargement fichier conf */
 
-  val f = File("src/main/resources/test")
+  val conf: Config = ConfigFactory.load()
+
+  val input: String = conf.getString("appplication.input-file")
+  val outputCSV: String = conf.getString("appplication.output-csv-file")
+
+  /* ------------------------- */
+
+  /* Definition variables test */
+  val f = File(input)
   val lines = f.lines.toList
   val fileAsString = f.contentAsString
   val linesAsStrings = fileAsString.split('\n')
@@ -15,6 +24,13 @@ object Main extends App {
 
   val xMax = (linesAsStrings(0).split(' ')(0)).toInt
   val yMax = (linesAsStrings(0).split(' ')(1)).toInt
+
+  // TODO: creation fichier output
+  val fo = File(outputCSV)
+  fo.createIfNotExists()
+    .overwrite(
+      "debut_x;debut_y;debut_direction;fin_x;fin_y;fin_direction;instructions\n"
+    )
 
   val rob = new Robot(0, 0, 0, 0, "N")
 
@@ -29,10 +45,11 @@ object Main extends App {
           processLines(tl, acc + 1, rob)
         } else if (acc != 0 && acc % 2 != 0) {
           val tmp = initRobot(hd, xMax, yMax)
-          tmp.desc()
           processLines(tl, acc + 1, tmp)
         } else {
           val tmp = followInstructions(hd, rob)
+          // TODO: Ecrire instructions dans csv
+          fo.append(s";$hd\n")
           processLines(tl, acc + 1, tmp)
         }
       }
@@ -41,12 +58,18 @@ object Main extends App {
 
   def initRobot(str: String, xMax: Int, yMax: Int): Robot = {
     val args = str.split(' ')
+    // TODO: Ecriture coordonnees initiales du robot
+    val data = s"${args(0)};${args(1)};${args(2)}"
+    fo.append(data)
     new Robot(args(0).toInt, xMax, args(1).toInt, yMax, args(2))
   }
 
   def followInstructions(str: String, rob: Robot): Robot = {
     if (str.length() < 1) {
-      // TODO: Ecriture donnees de chaque robot dans un fichier output
+      // TODO: Ecriture coordonnees finales du robot dans csv
+      fo.append(
+        s";can't convert int to string atm;can't convert int to string atm;${rob.getDirection()}"
+      )
       rob
     } else {
       val tmp = rob.action(str.charAt(0).toString)
@@ -57,6 +80,5 @@ object Main extends App {
   /* ------------------------- */
 
   val finalRobot = processLines(lines, acc, rob)
-  // println(finalRobot.desc())
 
 }
